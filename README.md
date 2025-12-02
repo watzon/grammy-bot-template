@@ -2,9 +2,20 @@
 
 A modern Telegram bot template built with Grammy, Drizzle ORM, and Bun. This template provides a solid foundation for building scalable Telegram bots with TypeScript, database integration, and modern development tooling.
 
+## Features
+
+- ✨ **Modern TypeScript** - Full type safety with strict mode
+- 🚀 **High Performance** - Built on Bun's fast JavaScript runtime
+- 🗄️ **Database Integration** - PostgreSQL with Drizzle ORM
+- 🚦 **Built-in Rate Limiting** - Automatic protection against Telegram API limits
+- 🧪 **Testing Ready** - Test setup with Bun's test runner
+- 🎨 **Code Quality** - Biome for linting and formatting
+- 📦 **Easy Setup** - One-command installation
+
 ## Table of Contents
 
 - [Installation](#installation)
+- [Rate Limiting](#rate-limiting)
 - [Usage](#usage)
 - [Environment Variables](#environment-variables)
 - [Database Setup](#database-setup)
@@ -42,6 +53,40 @@ A modern Telegram bot template built with Grammy, Drizzle ORM, and Bun. This tem
    ```bash
    bun dev
    ```
+
+## Rate Limiting
+
+This template includes built-in rate limiting to protect your bot from hitting Telegram's API limits. It's disabled by default but can be easily enabled.
+
+### Quick Setup
+
+1. **Install Redis**:
+   ```bash
+   # macOS
+   brew install redis
+
+   # Ubuntu/Debian
+   sudo apt-get install redis-server
+
+   # Docker
+   docker run -d -p 6379:6379 redis
+   ```
+
+2. **Enable rate limiting** in your `.env`:
+   ```env
+   RATE_LIMIT_ENABLED=true
+   REDIS_URL=redis://localhost:6379
+   ```
+
+3. **Restart your bot**
+
+That's it! Your bot is now protected with:
+- 🎯 **20 messages/minute** per chat
+- 🌐 **30 messages/second** globally
+- 🔄 **Automatic retries** and graceful fallback
+- 📊 **Rate limit stats** with `/rateLimit` command
+
+For detailed configuration options, see [docs/RATE_LIMITING.md](./docs/RATE_LIMITING.md).
 
 ## Usage
 
@@ -156,9 +201,18 @@ bun db:migrate    # Apply the migration
 │   │   ├── index.ts        # Database connection setup
 │   │   └── schema.ts       # Database schema definitions
 │   ├── middleware/         # Bot middleware
-│   │   └── logger.ts       # Logging middleware
+│   │   ├── logger.ts       # Logging middleware
+│   │   └── rateLimit.ts     # Rate limiting middleware
+│   ├── services/           # Core services
+│   │   ├── redisService.ts # Redis connection management
+│   │   └── rateLimitService.ts # Rate limiting logic
 │   ├── types.ts            # TypeScript type definitions
 │   ├── index.ts            # Application entry point
+├── tests/                  # Test files
+│   ├── middleware/         # Middleware tests
+│   └── services/           # Service tests
+├── docs/                   # Documentation
+│   └── RATE_LIMITING.md    # Rate limiting guide
 ├── drizzle/                # Generated database migrations
 ├── drizzle.config.ts       # Drizzle configuration
 ├── package.json            # Dependencies and scripts
